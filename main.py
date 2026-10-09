@@ -1,9 +1,6 @@
 from fractions import Fraction
 
-def factorial(number):
-    if not isinstance(number, int):
-        return "Please enter an integer as the factorial"
-
+dedasdadad
     if number < 0:
         return "Factorial is not defined for negative numbers"
 
