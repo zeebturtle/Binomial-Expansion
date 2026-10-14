@@ -1,4 +1,5 @@
 
+
 from fractions import Fraction
 
 def factorial(number):
@@ -42,54 +43,40 @@ Error values may be in scientific notation form, xe-y. The e is a constant, 10. 
 
 """)
 
-# Verification
-
 base = None
-n = None
-accuracy = None
-
 while base == None:
-
     try:
-
-        base = float(Fraction(input("What is the base:")))
-
+        base = float(Fraction(input("What is the base: ")))
+        if base <= 0:
+            print("The base must be a positive non-zero value. Please try again.")
+            base = None  # Reset so it repeats the loop
     except (ValueError, ZeroDivisionError):
-
         print("Please enter an integer, decimal or fraction as the base.")
 
+n = None
 while n == None:
-
     try:
-        n = float(Fraction(input("What is the power:")))
-
+        n = float(Fraction(input("What is the power: ")))
+        if n >= 1 or n <= -1:
+            print("The power must be a fraction between -1 and 1. Please try again.")
+            n = None  # Reset so it repeats the loop
     except (ValueError, ZeroDivisionError):
+        print("Please enter a decimal or fraction as the power.")
 
-        print("Please enter a decimal or fraction as the power")
-
+accuracy = None
 while accuracy == None:
-
     try:
-        accuracy = int(input("How many terms would you like (minimum:2):"))
-
-    except (ValueError , ZeroDivisionError):
-
-        print("Please enter an integer as the number of terms you would like")
+        accuracy = int(input("How many terms would you like (minimum: 2, maximum: 160): "))
+        if accuracy < 2:
+            print("The minimum number of terms is 2. Please try again.")
+            accuracy = None
+        elif accuracy > 160:
+            print("The maximum number of terms is 160. Please try again.")
+            accuracy = None
+    except (ValueError, ZeroDivisionError):
+        print("Please enter an integer as the number of terms you would like.")
 
 def binomialexpansion(base, n):
-
-    if n >= 1 or n <= -1:
-        return "The power must be a fraction between -1 and 1"
-
-    if base <= 0:
-        return "The base must be a positive non-zero value"
-
-    if accuracy < 2:
-        return "The minimum number of terms is 2"
-
-    if accuracy > 160:
-        return "The maximum number of terms is 160"
-
     #Scaling loop
 
     base_scale = base
@@ -171,7 +158,7 @@ def binomialexpansion(base, n):
 
 binomialexpansion(base, n)
 
+
 #Goal 2: to add a system involving the scaling loop that attempts to convert the base into a value as close to 1 as possible before expanding it.
 
 #The current expansion loses convergence speed as base tends 0 or 2, and it gains convergence speed as it tends to 1.
-
