@@ -3,16 +3,13 @@ from fractions import Fraction
 def factorial(number):
    if not isinstance(number, int):
        return "Please enter an integer as the factorial"
-
    if number < 0:
        return "Factorial is not defined for negative numbers"
-
    result = 1
 
    while number > 1:
        result *= number
        number -= 1
-
    return result
 
 print("""
@@ -39,6 +36,8 @@ Zero percentage error: Your approximation is exactly the same as Python's stored
 The magnitude of the percentage indicates the size of the difference relative to Python's stored value
 
 Error values may be in scientific notation form, xe-y. The e is a constant, 10. e-y means 10^-y, and you multiply this value by x, so xe-y means x multiplied by 10^-y.
+
+Convergence speed may vary depending on your value of base. What this means essentially is that for different values of base, the approximation may be more/less accurate for the same number of terms.
 
 """)
 
@@ -79,80 +78,23 @@ while accuracy == None:
 
 def binomialexpansion(base, n):
 
-    #Scaling loop part 1
+    # Scaling loop part 1. Satisfies 0 < base < 2 before expanding so that the series can converge
 
     base_scaled = base
-
     count = 0
+    multiplier = 1
+
+    # Scaling loop part 2. Gets the base between 0.5 and 2 so that convergence speed can be quicker
 
     while base_scaled >= 2:
-
         base_scaled /= 4
-
         count += 1
+        multiplier = (4 ** count) ** n
 
-#Scaling loop part 2 ~ Fix what chat told you about
-
-    interval_set = {base_scaled}
-
-    interval_list = [base_scaled]
-
-    scaling_complete = False
-
-    while not scaling_complete:
-
-        while base_scaled < 1:
-
-            base_scaled *= 4
-
-            count -= 1
-
-            interval_set.add(base_scaled)
-
-            interval_list.append(base_scaled)
-
-            if len(interval_list) != len(interval_set):
-
-                base_scaled = min(interval_set, key=lambda x: abs(x - 1))
-
-                scaling_complete = True
-
-                break
-
-            elif base_scaled == 1:
-                scaling_complete = True
-                break
-
-        if scaling_complete == True:
-            break
-
-        while base_scaled > 1:
-
-            base_scaled /= 4
-
-            count += 1
-
-            interval_set.add(base_scaled)
-
-            interval_list.append(base_scaled)
-
-            if len(interval_list) != len(interval_set):
-
-                base_scaled = min(interval_set, key=lambda x: abs(x - 1))
-
-                scaling_complete = True
-
-                break
-
-            elif base_scaled == 1:
-                scaling_complete = True
-                break
-
-     #End of scaling loop
-
-    multiplier_power = n * count
-
-    multiplier = 4 ** multiplier_power
+    while base_scaled < 0.5:
+        base_scaled *= 4
+        count += 1
+        multiplier = 1/(4 ** count) ** n
 
     #Binomial expansion loop
 
@@ -170,16 +112,12 @@ def binomialexpansion(base, n):
     term = numerator / denominator
 
     for i in range(2, accuracy):
-
         series += (term * (x ** iterated_power))
-
         iterated_number -= 1
         iterated_factorial += 1
         iterated_power += 1
-
         numerator *= (n + iterated_number)
         denominator = factorial(iterated_factorial)
-
         term = numerator / denominator
 
     #Expanding the series further to find error
@@ -187,16 +125,12 @@ def binomialexpansion(base, n):
     series_for_error = series
 
     for i in range(accuracy, accuracy + 10):
-
         series_for_error += (term * (x ** iterated_power))
-
         iterated_number -= 1
         iterated_factorial += 1
         iterated_power += 1
-
         numerator *= (n + iterated_number)
         denominator = factorial(iterated_factorial)
-
         term = numerator / denominator
 
     series *= multiplier
@@ -204,34 +138,29 @@ def binomialexpansion(base, n):
     #calculating estimated error
 
     series_for_error *= multiplier
-
     estimated_error = abs(series_for_error - series)
 
     #calculating percentage error
 
     python_value = base ** n
-
     percentage_error = ((series - python_value) / (python_value)) * 100
 
     print(f"The approximated value for {base} ^ {n} is:",str(series))
 
     if estimated_error != 0:
         print(f"The estimated error for your value is {estimated_error}")
-
     else:
         print("The calculated difference between the two sums is zero at python's standard floating-point precision. Therefore the estimated error cannot be calculated")
 
     if percentage_error != 0:
         print(f"The percentage error when compared with python's stored value for {base} ^ {n} is {percentage_error}")
-
     elif series == python_value:
         print(f"The percentage error when compared with python's stored value for {base} ^ {n} is 0. Therefore, the approximated value is the same as python's stored value")
-
     elif (series - python_value) == 0:
         print(f"The calculated difference between the approximated value and python's stored value for {base} ^ {n} is smaller than python's floating-point precision limit and therefore percentage error cannot be represented")
 
 binomialexpansion(base, n)
 
-#Goal 4: fix all the issues chat is talking about, primarily the second part of the scaling loop needs some reworking.
+#Next objective: use a recurrence relationship for the binomial expansion loop so that the code is more efficient
 
-#The current expansion loses convergence speed as base tends 0 or 2, and it gains convergence speed as it tends to 1.
+#The current expansion loses convergence speed as base tends to 0 or 2, and it gains convergence speed as it tends to 1.
