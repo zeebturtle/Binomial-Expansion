@@ -154,10 +154,9 @@ def binomialexpansion(base, n):
 
     if percentage_error != 0:
         print(f"The percentage error when compared with python's stored value for {base} ^ {n} is {percentage_error}")
-    elif series == python_value:
-        print(f"The percentage error when compared with python's stored value for {base} ^ {n} is 0. Therefore, the approximated value is the same as python's stored value")
     elif (series - python_value) == 0:
-        print(f"The calculated difference between the approximated value and python's stored value for {base} ^ {n} is smaller than python's floating-point precision limit and therefore percentage error cannot be represented")
+        print(f"Either the approximated value is the same as pythons stored value or the calculated difference between the approximated value and python's stored value for {base} ^ {n} is smaller than python's floating-point precision limit and therefore percentage error cannot be represented")
+    # Its far more likely that the latter is true, so I don't want to say both things
 
 binomialexpansion(base, n)
 
