@@ -78,155 +78,95 @@ while accuracy == None:
         print("Please enter an integer as the number of terms you would like.")
 
 def binomialexpansion(base, n):
-
     #Scaling loop part 1
-
     base_scaled = base
-
     count = 0
-
     while base_scaled >= 2:
-
         base_scaled /= 4
-
         count += 1
-
+       
 #Scaling loop part 2 ~ Fix what chat told you about
-
-    interval_set = {base_scaled}
-
-    interval_list = [base_scaled]
-
-    scaling_complete = False
-
+   interval_set = {base_scaled}
+   interval_list = [base_scaled]
+   scaling_complete = False
     while not scaling_complete:
-
         while base_scaled < 1:
-
             base_scaled *= 4
-
             count -= 1
-
             interval_set.add(base_scaled)
-
             interval_list.append(base_scaled)
-
             if len(interval_list) != len(interval_set):
-
                 base_scaled = min(interval_set, key=lambda x: abs(x - 1))
-
                 scaling_complete = True
-
                 break
-
             elif base_scaled == 1:
                 scaling_complete = True
                 break
-
         if scaling_complete == True:
             break
-
         while base_scaled > 1:
-
             base_scaled /= 4
-
             count += 1
-
             interval_set.add(base_scaled)
-
             interval_list.append(base_scaled)
-
             if len(interval_list) != len(interval_set):
-
                 base_scaled = min(interval_set, key=lambda x: abs(x - 1))
-
                 scaling_complete = True
-
                 break
-
             elif base_scaled == 1:
                 scaling_complete = True
                 break
-
+               
      #End of scaling loop
-
     multiplier_power = n * count
-
     multiplier = 4 ** multiplier_power
 
     #Binomial expansion loop
-
     x = base_scaled - 1
-
     series = 1 + (n * x)
-
     iterated_number = -1
     iterated_factorial = 2
     iterated_power = 2
-
     denominator = factorial(iterated_factorial)
     numerator = (n * (n + iterated_number))
-
     term = numerator / denominator
-
     for i in range(2, accuracy):
-
         series += (term * (x ** iterated_power))
-
         iterated_number -= 1
         iterated_factorial += 1
         iterated_power += 1
-
         numerator *= (n + iterated_number)
         denominator = factorial(iterated_factorial)
-
         term = numerator / denominator
-
+       
     #Expanding the series further to find error
-
     series_for_error = series
-
     for i in range(accuracy, accuracy + 10):
-
         series_for_error += (term * (x ** iterated_power))
-
         iterated_number -= 1
         iterated_factorial += 1
         iterated_power += 1
-
         numerator *= (n + iterated_number)
         denominator = factorial(iterated_factorial)
-
         term = numerator / denominator
-
     series *= multiplier
 
     #calculating estimated error
-
     series_for_error *= multiplier
-
     estimated_error = abs(series_for_error - series)
 
     #calculating percentage error
-
     python_value = base ** n
-
     percentage_error = ((series - python_value) / (python_value)) * 100
-
     print(f"The approximated value for {base} ^ {n} is:",str(series))
-
     if estimated_error != 0:
         print(f"The estimated error for your value is {estimated_error}")
-
     else:
         print("The calculated difference between the two sums is zero at python's standard floating-point precision. Therefore the estimated error cannot be calculated")
-
     if percentage_error != 0:
         print(f"The percentage error when compared with python's stored value for {base} ^ {n} is {percentage_error}")
-
     elif series == python_value:
         print(f"The percentage error when compared with python's stored value for {base} ^ {n} is 0. Therefore, the approximated value is the same as python's stored value")
-
     elif (series - python_value) == 0:
         print(f"The calculated difference between the approximated value and python's stored value for {base} ^ {n} is smaller than python's floating-point precision limit and therefore percentage error cannot be represented")
 
