@@ -1,3 +1,6 @@
+#Here im modifiying the code that actually does the binomial expansion. Im going to make it based on a recurrence relationship so i can calculate the next term based on the previous one
+#This will mean that im going to avoid some overflow errors and stuff and im going to be able to calculate more terms, and the code will be more efficient.
+
 from fractions import Fraction
 
 def factorial(number):
