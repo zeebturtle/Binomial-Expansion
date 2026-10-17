@@ -35,7 +35,7 @@ error_explanation = None
 
 while error_explanation == None:
 
-    error_explanation = input("Would you like to see an explanation of the error system (Y/N):")
+    error_explanation = input("Would you like to see an explanation of the error system (Y/N):").upper()
     if error_explanation == "Y":
         print("""
 
