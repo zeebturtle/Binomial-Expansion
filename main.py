@@ -34,6 +34,7 @@ Convergence speed may vary depending on your value of base. What this means esse
 error_explanation = None
 
 while error_explanation != "Y" or error_explanation != "N":
+
     error_explanation = input("Would you like to see an explanation of the error system (Y/N):")
     if error_explanation == "Y":
         print("""
@@ -53,7 +54,7 @@ Error values may be in scientific notation form, xe-y. The e is a constant, 10. 
     if error_explanation != "Y" or error_explanation != "N":
         print("Please enter Y or N")
 
-# Verification
+#Verification. Catches OverFlow errors and stuff
 
 base = None
 while base == None:
@@ -152,12 +153,12 @@ def binomialexpansion(base, n):
 
     series *= multiplier
 
-    #calculating estimated error
+    #calculating estimated error as the next ten terms of the original binomial expansion
 
     series_for_error *= multiplier
     estimated_error = abs(series_for_error - series)
 
-    #calculating percentage error
+    #calculating percentage error relative to pythons stored value
 
     python_value = base ** n
     percentage_error = series - python_value / python_value * 100
