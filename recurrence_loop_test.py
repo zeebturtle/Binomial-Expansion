@@ -69,13 +69,11 @@ while n == None:
 accuracy = None
 while accuracy == None:
     try:
-        accuracy = int(input("How many terms would you like (minimum: 2, maximum: 160): "))
+        accuracy = int(input("How many terms would you like (minimum: 2): "))
         if accuracy < 2:
             print("The minimum number of terms is 2. Please try again.")
             accuracy = None
-        elif accuracy > 160:
-            print("The maximum number of terms is 160. Please try again.")
-            accuracy = None
+
     except (ValueError, ZeroDivisionError):
         print("Please enter an integer as the number of terms you would like.")
 
@@ -114,14 +112,12 @@ def binomialexpansion(base, n):
 
     term = numerator / denominator
 
+    k = 4
+
     for i in range(2, accuracy):
         series += (term * (x ** iterated_power))
-        iterated_number -= 1
-        iterated_factorial += 1
-        iterated_power += 1
-        numerator *= (n + iterated_number)
-        denominator = factorial(iterated_factorial)
-        term = numerator / denominator
+        term = term * ((( n - k + 1) / k) * x)
+        k += 1
 
     #Expanding the series further to find error
 
@@ -129,12 +125,10 @@ def binomialexpansion(base, n):
 
     for i in range(accuracy, accuracy + 10):
         series_for_error += (term * (x ** iterated_power))
-        iterated_number -= 1
-        iterated_factorial += 1
-        iterated_power += 1
-        numerator *= (n + iterated_number)
-        denominator = factorial(iterated_factorial)
-        term = numerator / denominator
+
+        term = term * (((n - k + 1) / k) * x)
+
+        k += 1
 
     #calculating estimated error----------------------------------------------------------------------------------------
 

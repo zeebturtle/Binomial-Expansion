@@ -1,5 +1,7 @@
 from fractions import Fraction
 
+#created factorial function for use in the expansion
+
 def factorial(number):
    if not isinstance(number, int):
        return "Please enter an integer as the factorial"
@@ -17,29 +19,39 @@ Welcome to the binomial expansion calculator. Please read below for information 
 
 The calculator is designed to give approximations to irrational numbers to a degree of accuracy that you choose.
 
-Enter a fractional power in the form x/y where x is the numerator and y is the denominator between -1 and 1, enter the amount of terms you'd like involved in your approximated expansion
+Enter a fractional, non-zero power in the form x/y where x is the numerator and y is the denominator between -1 and 1, enter the amount of terms you'd like involved in your approximated expansion
 (The more terms, the more accurate your approximation will be), and enter a non-zero positive base.
 
 There are always at least two terms, 1 and nx.
 The maximum number of terms that you can select is 160.
 
-Powers that are recurring numbers such as 1/3 will always be truncated to 16 decimal places by default.
-
-#Explanation of error system
-
-The estimated error is the value of the next 10 terms of the expansion.
-
-The percentage error indicates how far your approximation differs from Python's stored value, expressed as a percentage.
-Negative percentage error: Your approximation is smaller than Python's stored value.
-Positive percentage error: Your approximation is larger than Python's stored value.
-Zero percentage error: Your approximation is exactly the same as Python's stored value.
-The magnitude of the percentage indicates the size of the difference relative to Python's stored value
-
-Error values may be in scientific notation form, xe-y. The e is a constant, 10. e-y means 10^-y, and you multiply this value by x, so xe-y means x multiplied by 10^-y.
+Python will naturally round any inputted value to about 15-17 significant decimal digits. This may mean that the accuracy of your approximation may be different to what you'd expect if you are inputting very small or very large values.
 
 Convergence speed may vary depending on your value of base. What this means essentially is that for different values of base, the approximation may be more/less accurate for the same number of terms.
 
 """)
+
+error_explanation = None
+
+while error_explanation != "Y" or error_explanation != "N":
+    error_explanation = input("Would you like to see an explanation of the error system (Y/N):")
+    if error_explanation == "Y":
+        print("""
+
+The estimated error is the value of the next 10 terms of the expansion.
+                
+The percentage error indicates how far your approximation differs from Python's stored value, expressed as a percentage.
+Negative percentage error: Your approximation is smaller than Python's stored value.
+Positive percentage error: Your approximation is larger than Python's stored value.
+Zero percentage error: Your approximation is the same as Python's stored value, or the calculated difference between the approximation and python's stored value is too small to represent.
+The magnitude of the percentage indicates the size of the difference relative to Python's stored value
+                
+Error values may be in scientific notation form, xe-y. The e is a constant, 10. e-y means 10^-y, and you multiply this value by x, so xe-y means x multiplied by 10^-y. You may also plug in values using scientific notation.
+""")
+    if error_explanation == "N":
+        break
+    if error_explanation != "Y" or error_explanation != "N":
+        print("Please enter Y or N")
 
 # Verification
 
@@ -50,6 +62,8 @@ while base == None:
         if base <= 0:
             print("The base must be a positive non-zero value. Please try again.")
             base = None  # Reset so it repeats the loop
+    except (OverflowError):
+        print("Your base is too large")
     except (ValueError, ZeroDivisionError):
         print("Please enter an integer, decimal or fraction as the base.")
 
@@ -60,6 +74,9 @@ while n == None:
         if n >= 1 or n <= -1:
             print("The power must be a fraction between -1 and 1. Please try again.")
             n = None  # Reset so it repeats the loop
+        if n == 0:
+            print("Either you have entered a power with a value of zero, or the value you have entered is too small.")
+            n = None
     except (ValueError, ZeroDivisionError):
         print("Please enter a decimal or fraction as the power.")
 
@@ -84,7 +101,7 @@ def binomialexpansion(base, n):
     count = 0
     multiplier = 1
 
-    # Scaling loop part 2. Gets the base between 0.5 and 2 so that convergence speed can be quicker
+    # Scaling loop part 2. Scales down base_scaled further to get it between 0.5 and 2 so that convergence speed can be faster
 
     while base_scaled >= 2:
         base_scaled /= 4
@@ -96,7 +113,7 @@ def binomialexpansion(base, n):
         count += 1
         multiplier = 1/(4 ** count) ** n
 
-    #Binomial expansion loop
+    #Binomial expansion loop. Based on the generalized binomial theorem
 
     x = base_scaled - 1
 
@@ -143,23 +160,23 @@ def binomialexpansion(base, n):
     #calculating percentage error
 
     python_value = base ** n
-    percentage_error = ((series - python_value) / (python_value)) * 100
+    percentage_error = series - python_value / python_value * 100
 
-    print(f"The approximated value for {base} ^ {n} is:",str(series))
+    if series == 1 and n != 0:
+        print(f"The power you have entered may be too small for python to calculate the difference between terms, resulting in an approximation of 1 for {base} ^ {n}.")
+    else:
+        print(f"The approximated value for {base} ^ {n} is:",str(series))
 
     if estimated_error != 0:
         print(f"The estimated error for your value is {estimated_error}")
     else:
-        print("The calculated difference between the two sums is zero at python's standard floating-point precision. Therefore the estimated error cannot be calculated")
+        print("The calculated difference between the two sums is too small to represent at python's standard floating-point precision. Therefore the estimated error cannot be calculated.")
 
     if percentage_error != 0:
         print(f"The percentage error when compared with python's stored value for {base} ^ {n} is {percentage_error}")
     elif (series - python_value) == 0:
-        print(f"Either the approximated value is the same as pythons stored value or the calculated difference between the approximated value and python's stored value for {base} ^ {n} is smaller than python's floating-point precision limit and therefore percentage error cannot be represented")
-    # Its far more likely that the latter is true, so I don't want to say both things
+        print(f"Either the approximated value is the same as pythons stored value or the calculated difference between the approximated value and python's stored value for {base} ^ {n} is smaller than python's floating-point precision limit and therefore percentage error cannot be represented.")
 
 binomialexpansion(base, n)
-
-#Next objective: use a recurrence relationship for the binomial expansion loop so that the code is more efficient
 
 #The current expansion loses convergence speed as base tends to 0 or 2, and it gains convergence speed as it tends to 1.
