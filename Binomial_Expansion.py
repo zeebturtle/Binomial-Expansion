@@ -33,7 +33,7 @@ Convergence speed may vary depending on your value of base. What this means esse
 
 error_explanation = None
 
-while error_explanation != "Y" or error_explanation != "N":
+while error_explanation == None:
 
     error_explanation = input("Would you like to see an explanation of the error system (Y/N):")
     if error_explanation == "Y":
@@ -49,9 +49,11 @@ The magnitude of the percentage indicates the size of the difference relative to
                 
 Error values may be in scientific notation form, xe-y. The e is a constant, 10. e-y means 10^-y, and you multiply this value by x, so xe-y means x multiplied by 10^-y. You may also plug in values using scientific notation.
 """)
+
     if error_explanation == "N":
         break
-    if error_explanation != "Y" or error_explanation != "N":
+    if error_explanation != "Y" and error_explanation != "N":
+        error_explanation = None
         print("Please enter Y or N")
 
 #Verification. Catches OverFlow errors and stuff
